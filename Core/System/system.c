@@ -7,6 +7,7 @@
 
 #include "system.h"
 #include "usbd_cdc_if.h"
+#include "lsm6dsox.h"
 //#include "tec.h"
 //#include "rgb.h"
 #include <stdio.h>
@@ -16,6 +17,8 @@ uint8_t rx_buffer[RX_BUFFER_SIZE];
 uint8_t usb_ready=0;
 uint8_t uart_rx_ready=0;
 uint8_t uart_tx_ready=0;
+
+LSM6DSOX_Object_t gyro_obj;
 
 EEprom_HandleTypeDef eeprom;
 //ds18b20_device_t ts1;
@@ -45,6 +48,59 @@ uint32_t adc2_buf[5];
 
 bool config_saved = 0;
 
+void InitGyroscope(void)
+{
+    int32_t ret;
+
+    // Инициализируем гироскоп
+    ret = LSM6DSOX_Init(&gyro_obj);
+    if (ret != LSM6DSOX_OK)
+    {
+        printf("Ошибка инициализации гироскопа\n");
+        return;
+    }
+
+    // Устанавливаем выходную частоту данных (ODR)
+    ret = LSM6DSOX_GYRO_SetOutputDataRate(&gyro_obj, 104.0f); // Пример: 104 Hz
+    if (ret != LSM6DSOX_OK)
+    {
+        printf("Ошибка установки частоты обновления\n");
+        return;
+    }
+
+    // Устанавливаем полный диапазон измерений (Full Scale)
+    ret = LSM6DSOX_GYRO_SetFullScale(&gyro_obj, LSM6DSOX_2000dps); // ±2000°/с
+    if (ret != LSM6DSOX_OK)
+    {
+        printf("Ошибка установки диапазона гироскопа\n");
+        return;
+    }
+
+    // Включаем гироскоп
+    ret = LSM6DSOX_GYRO_Enable(&gyro_obj);
+    if (ret != LSM6DSOX_OK)
+    {
+        printf("Ошибка включения гироскопа\n");
+    }
+}
+
+void ReadGyroscopeData(void)
+{
+    LSM6DSOX_Axes_t angular_rate;
+    int32_t ret;
+
+    // Читаем текущие значения по осям
+    ret = LSM6DSOX_GYRO_GetAxes(&gyro_obj, &angular_rate);
+    if (ret != LSM6DSOX_OK)
+    {
+        printf("Ошибка считывания данных с гироскопа\n");
+        return;
+    }
+
+    // Выводим значения на каждой оси
+    printf("Gyroscope Data - X: %ld, Y: %ld, Z: %ld\n",
+           angular_rate.x, angular_rate.y, angular_rate.z);
+}
 
 void systemInit(){
 
@@ -96,7 +152,10 @@ void systemInit(){
 	//HAL_UART_Receive_IT(&huart2, rx_buffer, RX_BUFFER_SIZE);
 	HAL_IWDG_Refresh(&hiwdg);
 	//HAL_TIM_Base_Start(&htim5);
+	InitGyroscope();
 }
+
+
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc){
 	if(hadc == &hadc1) HAL_GPIO_TogglePin(GREEN_GPIO_Port, GREEN_Pin);
@@ -226,6 +285,7 @@ void usbCallback(){
 
 void systemTask(){
 	HAL_IWDG_Refresh(&hiwdg);
+	ReadGyroscopeData();
     // Основная логика обработки
     //if(usb_ready) usbCallback();
 //    if(uart_rx_ready) uartCallback();
