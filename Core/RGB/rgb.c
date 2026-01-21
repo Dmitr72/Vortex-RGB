@@ -26,12 +26,20 @@ bool RGB_Init(RGB_channel* rgb,
 {
 	uint8_t buf[EE_PAGE_SIZE] = {0};
 	if(eepromReadPage(ee, buf, eeprom_page_num) != HAL_OK) return 0;
-	rgb->threshold = buf[0];
-	rgb->divider = buf[2] <<8 | buf[1];
-	rgb->smolder = buf[4] <<8 | buf[3];
-	rgb->max_current = max_current;//buf[6] <<8 | buf[5];
-	//memcpy(&rgb->set_current, &buf[5], sizeof(float));
+	uint32_t check_digit = buf[EE_PAGE_SIZE-1] << 8 | buf[EE_PAGE_SIZE-2];
+	if(check_digit != RGB_EE_CHECK_DIGIT){
+		rgb->threshold = 0;
+		rgb->divider = 0;
+		rgb->smolder = 0;
+		rgb->ee_checked = 0;
+	}else{
+		rgb->threshold = buf[0];
+		rgb->divider = buf[2] <<8 | buf[1];
+		rgb->smolder = buf[4] <<8 | buf[3];
+		rgb->ee_checked = 1;
+	}
 
+	rgb->max_current = max_current;
 	rgb->threshold_had = threshold_had;
 	rgb->divider_dac = divider_dac;
 	rgb->smolder_dac = smolder_dac;

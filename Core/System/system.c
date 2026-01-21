@@ -38,8 +38,8 @@ bool color_effect_mode_changed = 0;
 uint8_t color_effect_count = 0;
 
 //float radiator_temperature = 24;
-uint32_t adc1_buf[1];
-uint32_t adc2_buf[4];
+uint32_t adc1_buf[7];
+uint32_t adc2_buf[5];
 
 //uint8_t temp_conversion_counter = 0;
 
@@ -70,26 +70,13 @@ void systemInit(){
 
 	}else printf("EEPROM initialization successful\n");
 	HAL_IWDG_Refresh(&hiwdg);
-	//Initialization of temperature sensors
-//	ds18b20_timer_init(&htim6);	//DS18B20 delay_mks
-//	ds18b20_init(&ts1, TS1_GPIO_Port, TS1_Pin);
-//	ds18b20_init(&ts2, TS2_GPIO_Port, TS2_Pin);
-//	ds18b20_init(&ts3, TS3_GPIO_Port, TS3_Pin);
-	HAL_IWDG_Refresh(&hiwdg);
-	//Initialization of TECs
-//	HAL_OPAMP_Start(&hopamp1);	//Current shunt voltage amplifier, Mode-PGA Internally Connected, PGA Gain-4
-//	HAL_OPAMP_Start(&hopamp2);	//Current shunt voltage amplifier, Mode-PGA Internally Connected, PGA Gain-4
-	//HAL_DMA_RegisterCallback(&hdma_adc1, HAL_DMA_XFER_CPLT_CB_ID, adc1DMAcallback);
+
 	HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
 	HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);
-//	HAL_ADC_Start_DMA(&hadc1, adc1_buf, 1);
-//	HAL_ADC_Start_DMA(&hadc2, adc2_buf, 4);
+	//HAL_ADC_Start_DMA(&hadc1, adc1_buf, 7);
+	//HAL_ADC_Start_DMA(&hadc2, adc2_buf, 5);
 	HAL_IWDG_Refresh(&hiwdg);
-//	tecInit(&tec1, TEC1C_GPIO_Port, TEC1C_Pin, TEC1H_GPIO_Port, TEC1H_Pin, &htim1, TIM_CHANNEL_1,
-//				&hadc1, &adc1_buf[0], &ts1, &eeprom, TEC_FIRST_EE_PAGE_NUM, 1, 2);
-//	tecInit(&tec2, TEC2C_GPIO_Port, TEC2C_Pin, TEC2H_GPIO_Port, TEC2H_Pin, &htim8, TIM_CHANNEL_3,
-//				&hadc2, &adc2_buf[0], &ts3, &eeprom, TEC_FIRST_EE_PAGE_NUM+1, 0, 1);
-//	HAL_IWDG_Refresh(&hiwdg);
+
 	//Initialization of Laser drivers
 	AD5160_Init(&hadR, &hspi1, R_TH_CS_GPIO_Port, R_TH_CS_Pin);
 	AD5160_Init(&hadG, &hspi1, G_TH_CS_GPIO_Port, G_TH_CS_Pin);
@@ -109,6 +96,10 @@ void systemInit(){
 	//HAL_UART_Receive_IT(&huart2, rx_buffer, RX_BUFFER_SIZE);
 	HAL_IWDG_Refresh(&hiwdg);
 	//HAL_TIM_Base_Start(&htim5);
+}
+
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc){
+	if(hadc == &hadc1) HAL_GPIO_TogglePin(GREEN_GPIO_Port, GREEN_Pin);
 }
 
 //void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
@@ -236,11 +227,11 @@ void usbCallback(){
 void systemTask(){
 	HAL_IWDG_Refresh(&hiwdg);
     // Основная логика обработки
-    if(usb_ready) usbCallback();
+    //if(usb_ready) usbCallback();
 //    if(uart_rx_ready) uartCallback();
 
-	HAL_ADC_Start_DMA(&hadc1, adc1_buf, 1);
-	HAL_ADC_Start_DMA(&hadc2, adc2_buf, 4);
+	HAL_ADC_Start_DMA(&hadc1, adc1_buf, 7);
+	HAL_ADC_Start_DMA(&hadc2, adc2_buf, 5);
 
     // Остальная периодическая логика
 //    if(temp_conversion_counter++ >= 100){

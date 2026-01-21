@@ -26,6 +26,7 @@
 //#define RGB_PWM_TIMER_FREQUENZ 10000
 #define RGB_SHUNT_MULTIPLIER 20	//shunt voltage amplifier multiplier
 #define RGB_FIRST_EE_PAGE_NUM 1
+#define RGB_EE_CHECK_DIGIT 0xAA55
 
 typedef struct {
 	uint8_t threshold;						//value for 8-bit digital resistor for threshold adjustment, loaded from EEPROM during initialization
@@ -49,6 +50,7 @@ typedef struct {
 	uint8_t last_threshold;
 	uint16_t last_divider;
 	uint16_t last_smolder;
+	bool ee_checked;
 
 } RGB_channel;
 
