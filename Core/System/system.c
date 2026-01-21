@@ -7,9 +7,8 @@
 
 #include "system.h"
 #include "usbd_cdc_if.h"
+#include "custom_mems_conf.h"
 #include "lsm6dsox.h"
-//#include "tec.h"
-//#include "rgb.h"
 #include <stdio.h>
 
 uint8_t tx_buffer[TX_BUFFER_SIZE];
@@ -18,7 +17,14 @@ uint8_t usb_ready=0;
 uint8_t uart_rx_ready=0;
 uint8_t uart_tx_ready=0;
 
+
 LSM6DSOX_Object_t gyro_obj;
+
+
+  // Регистрация интерфейса
+//  if (LSM6DSOX_RegisterBusIO(&gyro_obj, &io_ctx) != LSM6DSOX_OK) {
+//      printf("Ошибка регистрации интерфейса SPI\n");
+//  }
 
 EEprom_HandleTypeDef eeprom;
 //ds18b20_device_t ts1;
@@ -48,41 +54,126 @@ uint32_t adc2_buf[5];
 
 bool config_saved = 0;
 
-void InitGyroscope(void)
-{
-    int32_t ret;
+void InitGyroscope(void) {
+    LSM6DSOX_IO_t io_ctx;          // Структура интерфейса
+    //LSM6DSOX_Object_t gyro_obj;    // Объект гироскопа
 
-    // Инициализируем гироскоп
-    ret = LSM6DSOX_Init(&gyro_obj);
-    if (ret != LSM6DSOX_OK)
-    {
+    // Настройка интерфейса
+    io_ctx.BusType = LSM6DSOX_SPI_4WIRES_BUS; // Указываем использовать SPI в 4-проводном режиме
+    io_ctx.Init = BSP_SPI1_Init;             // Функция инициализации SPI
+    io_ctx.DeInit = BSP_SPI1_DeInit;         // Деинициализация SPI
+    io_ctx.WriteReg = BSP_SPI1_Send;     // Функция записи в регистр
+    io_ctx.ReadReg = BSP_SPI1_Recv;       // Функция чтения из регистра
+    io_ctx.GetTick = BSP_GetTick;            // Таймер для отслеживания времени
+
+    // Регистрация интерфейса в объекте гироскопа
+    if (LSM6DSOX_RegisterBusIO(&gyro_obj, &io_ctx) != LSM6DSOX_OK) {
+        printf("Ошибка регистрации интерфейса SPI\n");
+        return;
+    }
+
+    // Инициализация гироскопа
+    if (LSM6DSOX_Init(&gyro_obj) != LSM6DSOX_OK) {
         printf("Ошибка инициализации гироскопа\n");
         return;
     }
 
-    // Устанавливаем выходную частоту данных (ODR)
-    ret = LSM6DSOX_GYRO_SetOutputDataRate(&gyro_obj, 104.0f); // Пример: 104 Hz
-    if (ret != LSM6DSOX_OK)
-    {
-        printf("Ошибка установки частоты обновления\n");
-        return;
-    }
+    printf("Гироскоп успешно инициализирован!\n");
 
-    // Устанавливаем полный диапазон измерений (Full Scale)
-    ret = LSM6DSOX_GYRO_SetFullScale(&gyro_obj, LSM6DSOX_2000dps); // ±2000°/с
-    if (ret != LSM6DSOX_OK)
-    {
-        printf("Ошибка установки диапазона гироскопа\n");
-        return;
-    }
-
-    // Включаем гироскоп
-    ret = LSM6DSOX_GYRO_Enable(&gyro_obj);
-    if (ret != LSM6DSOX_OK)
-    {
+//    if (LSM6DSOX_GYRO_SetOutputDataRate(&gyro_obj, 104.0f) != LSM6DSOX_OK) {
+//        printf("Ошибка установки частоты обновления гироскопа\n");
+//    }
+    if (LSM6DSOX_GYRO_Enable(&gyro_obj) != LSM6DSOX_OK) {
         printf("Ошибка включения гироскопа\n");
     }
+    uint8_t gyro_id = 0;
+    if (LSM6DSOX_ReadID(&gyro_obj, &gyro_id) != LSM6DSOX_OK) {
+    	printf("ID read error\n");
+    }
+
+    printf("ID-%d\n", gyro_id);
 }
+
+void systemTask(){
+	HAL_IWDG_Refresh(&hiwdg);
+
+	ReadGyroscopeData();
+    // Основная логика обработки
+    //if(usb_ready) usbCallback();
+//    if(uart_rx_ready) uartCallback();
+
+	HAL_ADC_Start_DMA(&hadc1, adc1_buf, 7);
+	HAL_ADC_Start_DMA(&hadc2, adc2_buf, 5);
+
+    // Остальная периодическая логика
+//    if(temp_conversion_counter++ >= 100){
+//    	if(color_effect_mode){
+//    		if(color_effect_mode_changed){
+//    			color_effect_mode_changed = 0;
+//    			setRGBsmolder(&drvR, 0);
+//				setRGBsmolder(&drvG, 0);
+//				setRGBsmolder(&drvB, 0);
+//    		}
+//    		if(HAL_TIM_Base_GetState(&htim3) != HAL_TIM_STATE_BUSY) HAL_TIM_Base_Start_IT(&htim3);
+//    	}else  HAL_TIM_Base_Stop_IT(&htim3);
+//
+//        temp_conversion_counter = 0;
+//        HAL_GPIO_WritePin(RED_GPIO_Port, RED_Pin, GPIO_PIN_SET);
+//        tempConversion();
+//        HAL_GPIO_WritePin(RED_GPIO_Port, RED_Pin, GPIO_PIN_RESET);
+//        tecStateConversion(&tec1);
+//        tecStateConversion(&tec2);
+//        printf("tec1 - %s\r\n", getTECstateString(&tec1));
+//        printf("tec2 - %s\r\n", getTECstateString(&tec2));
+//        RGB_Task(&drvR);
+//        RGB_Task(&drvG);
+//        RGB_Task(&drvB);
+//        HAL_GPIO_TogglePin(GREEN_GPIO_Port, GREEN_Pin);
+//    }
+//
+//    tecPWMconversion(&tec1);
+//    tecPWMconversion(&tec2);
+}
+
+//void InitGyroscope(void)
+//{
+//    int32_t ret;
+//
+//    printf("Начало инициализации гироскопа...\n");
+//    ret = LSM6DSOX_Init(&gyro_obj);
+//    if (ret != LSM6DSOX_OK)
+//    {
+//        printf("Ошибка инициализации гироскопа\n");
+//        return;
+//    }
+//    printf("Инициализация гироскопа завершена успешно\n");
+//
+//    printf("Установка частоты вывода данных...\n");
+//    ret = LSM6DSOX_GYRO_SetOutputDataRate(&gyro_obj, 104.0f); // Пример: 104 Hz
+//    if (ret != LSM6DSOX_OK)
+//    {
+//        printf("Ошибка установки частоты обновления\n");
+//        return;
+//    }
+//    printf("Частота вывода данных установлена успешно\n");
+//
+//    printf("Установка диапазона измерений...\n");
+//    ret = LSM6DSOX_GYRO_SetFullScale(&gyro_obj, LSM6DSOX_2000dps); // ±2000°/с
+//    if (ret != LSM6DSOX_OK)
+//    {
+//        printf("Ошибка установки диапазона гироскопа\n");
+//        return;
+//    }
+//    printf("Диапазон измерений установлен успешно\n");
+//
+//    printf("Включение гироскопа...\n");
+//    ret = LSM6DSOX_GYRO_Enable(&gyro_obj);
+//    if (ret != LSM6DSOX_OK)
+//    {
+//        printf("Ошибка включения гироскопа\n");
+//    }
+//    printf("Гироскоп включен успешно\n");
+//}
 
 void ReadGyroscopeData(void)
 {
@@ -283,45 +374,7 @@ void usbCallback(){
 //	}
 //}
 
-void systemTask(){
-	HAL_IWDG_Refresh(&hiwdg);
-	ReadGyroscopeData();
-    // Основная логика обработки
-    //if(usb_ready) usbCallback();
-//    if(uart_rx_ready) uartCallback();
 
-	HAL_ADC_Start_DMA(&hadc1, adc1_buf, 7);
-	HAL_ADC_Start_DMA(&hadc2, adc2_buf, 5);
-
-    // Остальная периодическая логика
-//    if(temp_conversion_counter++ >= 100){
-//    	if(color_effect_mode){
-//    		if(color_effect_mode_changed){
-//    			color_effect_mode_changed = 0;
-//    			setRGBsmolder(&drvR, 0);
-//				setRGBsmolder(&drvG, 0);
-//				setRGBsmolder(&drvB, 0);
-//    		}
-//    		if(HAL_TIM_Base_GetState(&htim3) != HAL_TIM_STATE_BUSY) HAL_TIM_Base_Start_IT(&htim3);
-//    	}else  HAL_TIM_Base_Stop_IT(&htim3);
-//
-//        temp_conversion_counter = 0;
-//        HAL_GPIO_WritePin(RED_GPIO_Port, RED_Pin, GPIO_PIN_SET);
-//        tempConversion();
-//        HAL_GPIO_WritePin(RED_GPIO_Port, RED_Pin, GPIO_PIN_RESET);
-//        tecStateConversion(&tec1);
-//        tecStateConversion(&tec2);
-//        printf("tec1 - %s\r\n", getTECstateString(&tec1));
-//        printf("tec2 - %s\r\n", getTECstateString(&tec2));
-//        RGB_Task(&drvR);
-//        RGB_Task(&drvG);
-//        RGB_Task(&drvB);
-//        HAL_GPIO_TogglePin(GREEN_GPIO_Port, GREEN_Pin);
-//    }
-//
-//    tecPWMconversion(&tec1);
-//    tecPWMconversion(&tec2);
-}
 
 //void colorEffect(){
 //

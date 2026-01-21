@@ -134,6 +134,8 @@ int main(void)
   MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
   //HAL_GPIO_WritePin(B_PEN_GPIO_Port, B_PEN_Pin, GPIO_PIN_SET);
+
+
   systemInit();
   /* USER CODE END 2 */
 
