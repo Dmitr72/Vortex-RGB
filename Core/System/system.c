@@ -1,0 +1,453 @@
+/*
+ * system.c
+ *
+ *  Created on: Oct 29, 2025
+ *      Author: Optik
+ */
+
+#include "system.h"
+#include "usbd_cdc_if.h"
+//#include "tec.h"
+//#include "rgb.h"
+#include <stdio.h>
+
+uint8_t tx_buffer[TX_BUFFER_SIZE];
+uint8_t rx_buffer[RX_BUFFER_SIZE];
+uint8_t usb_ready=0;
+uint8_t uart_rx_ready=0;
+uint8_t uart_tx_ready=0;
+
+EEprom_HandleTypeDef eeprom;
+//ds18b20_device_t ts1;
+//ds18b20_device_t ts2;
+//ds18b20_device_t ts3;
+//TEC_device_t tec1;
+//TEC_device_t tec2;
+AD5160_HandleTypeDef hadR;
+AD5160_HandleTypeDef hadG;
+AD5160_HandleTypeDef hadB;
+DAC8551_HandleTypeDef hdacR;
+DAC8551_HandleTypeDef hdacG;
+DAC8551_HandleTypeDef hdacB;
+RGB_channel drvR;
+RGB_channel drvG;
+RGB_channel drvB;
+
+bool color_effect_mode = 0;
+bool color_effect_mode_changed = 0;
+uint8_t color_effect_count = 0;
+
+//float radiator_temperature = 24;
+uint32_t adc1_buf[1];
+uint32_t adc2_buf[4];
+
+//uint8_t temp_conversion_counter = 0;
+
+bool config_saved = 0;
+
+
+void systemInit(){
+
+	EE_Init_State ee = eepromInit(&eeprom, &hi2c2, 0xA0, 4096, I2C_MEMADD_SIZE_16BIT, EE_PAGE_SIZE);//ee = EE_ERROR;
+	if(ee != EE_OK){
+		if(ee == EE_ERROR){
+			printf("EEPROM error, initialization process stopped.\n");
+			HAL_IWDG_Refresh(&hiwdg);
+			HAL_Delay(1000);
+			Error_Handler();
+		}
+		if(ee == EE_NOT_FORMATTED){
+			printf("Formatting EEPROM\n");
+			HAL_Delay(100);
+			if(eepromFormat(&eeprom) != HAL_OK){
+				printf("Error formatting EEPROM, initialization process stopped.\n");
+				HAL_IWDG_Refresh(&hiwdg);
+				HAL_Delay(1000);
+				Error_Handler();
+			}
+			else printf("EEPROM formatted\n");
+		}
+
+	}else printf("EEPROM initialization successful\n");
+	HAL_IWDG_Refresh(&hiwdg);
+	//Initialization of temperature sensors
+//	ds18b20_timer_init(&htim6);	//DS18B20 delay_mks
+//	ds18b20_init(&ts1, TS1_GPIO_Port, TS1_Pin);
+//	ds18b20_init(&ts2, TS2_GPIO_Port, TS2_Pin);
+//	ds18b20_init(&ts3, TS3_GPIO_Port, TS3_Pin);
+	HAL_IWDG_Refresh(&hiwdg);
+	//Initialization of TECs
+//	HAL_OPAMP_Start(&hopamp1);	//Current shunt voltage amplifier, Mode-PGA Internally Connected, PGA Gain-4
+//	HAL_OPAMP_Start(&hopamp2);	//Current shunt voltage amplifier, Mode-PGA Internally Connected, PGA Gain-4
+	//HAL_DMA_RegisterCallback(&hdma_adc1, HAL_DMA_XFER_CPLT_CB_ID, adc1DMAcallback);
+	HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
+	HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);
+//	HAL_ADC_Start_DMA(&hadc1, adc1_buf, 1);
+//	HAL_ADC_Start_DMA(&hadc2, adc2_buf, 4);
+	HAL_IWDG_Refresh(&hiwdg);
+//	tecInit(&tec1, TEC1C_GPIO_Port, TEC1C_Pin, TEC1H_GPIO_Port, TEC1H_Pin, &htim1, TIM_CHANNEL_1,
+//				&hadc1, &adc1_buf[0], &ts1, &eeprom, TEC_FIRST_EE_PAGE_NUM, 1, 2);
+//	tecInit(&tec2, TEC2C_GPIO_Port, TEC2C_Pin, TEC2H_GPIO_Port, TEC2H_Pin, &htim8, TIM_CHANNEL_3,
+//				&hadc2, &adc2_buf[0], &ts3, &eeprom, TEC_FIRST_EE_PAGE_NUM+1, 0, 1);
+//	HAL_IWDG_Refresh(&hiwdg);
+	//Initialization of Laser drivers
+	AD5160_Init(&hadR, &hspi1, R_TH_CS_GPIO_Port, R_TH_CS_Pin);
+	AD5160_Init(&hadG, &hspi1, G_TH_CS_GPIO_Port, G_TH_CS_Pin);
+	AD5160_Init(&hadB, &hspi1, B_TH_CS_GPIO_Port, B_TH_CS_Pin);
+	DAC8551_Init(&hdacR, &hspi1, R_DIV_CS_GPIO_Port, R_DIV_CS_Pin, 5);
+	DAC8551_Init(&hdacG, &hspi1, G_DIV_CS_GPIO_Port, G_DIV_CS_Pin, 5);
+	DAC8551_Init(&hdacB, &hspi1, B_DIV_CS_GPIO_Port, B_DIV_CS_Pin, 5);
+//	RGB_Init(&drvR, 1150, &hadR, &hdacR, &hdac4, DAC_CHANNEL_1, &hcomp7, &htim2, TIM_CHANNEL_4, &hadc2, &adc2_buf[1], 200, &ts3, &ts2, &eeprom, RGB_FIRST_EE_PAGE_NUM);
+//	RGB_Init(&drvG, 2200, &hadG, &hdacG, &hdac1, DAC_CHANNEL_2, &hcomp5, &htim2, TIM_CHANNEL_3, &hadc2, &adc2_buf[2], 100, &ts1, &ts2, &eeprom, RGB_FIRST_EE_PAGE_NUM + 1);
+//	RGB_Init(&drvB, 3600, &hadB, &hdacB, &hdac3, DAC_CHANNEL_2, &hcomp4, &htim2, TIM_CHANNEL_1, &hadc2, &adc2_buf[3], 50, &ts1, &ts2, &eeprom, RGB_FIRST_EE_PAGE_NUM + 2);
+
+	HAL_IWDG_Refresh(&hiwdg);
+
+	HAL_Delay(500);
+
+	//HAL_TIM_Base_Start(&htim7);	//TEC DC power module PWM period conversion timer
+	//HAL_UART_Receive_IT(&huart2, rx_buffer, RX_BUFFER_SIZE);
+	HAL_IWDG_Refresh(&hiwdg);
+	//HAL_TIM_Base_Start(&htim5);
+}
+
+//void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
+//	//if(huart==&huart2){
+//		uart_rx_ready = 1;
+//
+//	}
+//}
+//
+//void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart){
+//	//if(huart==&huart2){
+//		uart_tx_ready = 1;
+//	}
+//}
+//
+//void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart) {
+//    if(huart == &huart2) {
+//        printf("Initial UART Error: 0x%lX\n", HAL_UART_GetError(huart));
+//        // Только логируем первую ошибку, остальные будем ловить в systemTask
+//        __HAL_UART_CLEAR_FLAG(huart, UART_CLEAR_PEF | UART_CLEAR_FEF);
+//        huart->ErrorCode = HAL_UART_ERROR_NONE;
+//        HAL_UART_StateTypeDef state = HAL_UART_GetState(huart);
+//        printf("Uart state %lu\n", state);
+//        if(HAL_UART_Receive_IT(&huart2, rx_buffer, RX_BUFFER_SIZE) == HAL_OK) printf("The error has been fixed.\n");
+//    }
+//}
+
+//void HAL_UART_AbortReceiveCpltCallback(UART_HandleTypeDef *huart){
+//	if(huart == &huart2) HAL_UART_Receive_IT(&huart2, rx_buffer, RX_BUFFER_SIZE);
+//}
+
+//void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+//	if(htim == &htim3) colorEffect();
+//}
+
+//void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
+//	//HAL_GPIO_TogglePin(RED_GPIO_Port, RED_Pin);
+//
+//	TIM3->CNT = 0;
+//	TIM3->ARR = TIM5->CNT/1360-5;
+//	TIM5->CNT = 0;
+//	color_effect_count = 0;
+//	//colorEffect();
+//}
+//void printUartStatus() {
+//    printf("UART State: %lu\n", HAL_UART_GetState(&huart2));
+//    printf("UART Errors: 0x%lX\n", huart2.ErrorCode);
+//}
+
+void usbCallback(){
+	uint8_t len = usb_ready;
+	usb_ready=0;
+	if(len!=32) return;
+	HAL_GPIO_TogglePin(RED_GPIO_Port, RED_Pin);
+
+	if(rx_buffer[0] == 'D' && rx_buffer[1] == 'a'){	//incoming data
+		setData(rx_buffer);
+		BuildControlData();
+		CDC_Transmit_FS(tx_buffer, 32);
+	}
+
+	if(rx_buffer[0] == 'R' && rx_buffer[1] == 'C'){	//request config
+		BuildConfigData();
+		CDC_Transmit_FS(tx_buffer, 32);
+		return;
+	}
+}
+
+//void resyncUartReception(void) {
+//    // 1. Останавливаем текущий прием
+//    HAL_UART_AbortReceive_IT(&huart2);
+//
+//    // 2. Очищаем все флаги
+//    __HAL_UART_CLEAR_FLAG(&huart2, UART_CLEAR_PEF | UART_CLEAR_FEF | UART_CLEAR_NEF | UART_CLEAR_OREF);
+//
+//    // 3. Очищаем приемный регистр
+//    volatile uint32_t tmp;
+//    while(__HAL_UART_GET_FLAG(&huart2, UART_FLAG_RXNE)) {
+//        tmp = huart2.Instance->RDR;
+//        HAL_Delay(1);
+//    }
+//    (void)tmp;
+//
+//    // 4. Очищаем буфер
+//    memset(rx_buffer, 0, RX_BUFFER_SIZE);
+//
+//    // 5. Перезапускаем прием
+//    HAL_UART_Receive_IT(&huart2, rx_buffer, RX_BUFFER_SIZE);
+//
+//    printf("UART reception resynchronized\n");
+//}
+
+//void uartCallback(){
+//	uart_rx_ready=0;
+//	HAL_UART_Receive_IT(&huart2, rx_buffer, RX_BUFFER_SIZE);
+//	HAL_GPIO_TogglePin(RED_GPIO_Port, RED_Pin);
+//
+//	if(rx_buffer[0] == 'D' && rx_buffer[1] == 'a'){	//incoming data
+//		if(color_effect_mode) color_effect_mode = 0;
+//		setData(rx_buffer);
+//		BuildControlData();
+//		HAL_UART_Transmit_IT(&huart2, tx_buffer, 32);
+//		return;
+//	}
+//
+//	if(rx_buffer[0] == 'C' && rx_buffer[1] == 'o')
+//		if(!color_effect_mode){
+//			color_effect_mode_changed = 1;
+//			color_effect_mode = 1;
+//		}
+//
+//	if(rx_buffer[0] == 'R' && rx_buffer[1] == 'C'){	//request config
+//		BuildConfigData();
+//		HAL_UART_Transmit_IT(&huart2, tx_buffer, 32);
+//		return;
+//	}
+//
+//	if(!checkCRC(rx_buffer)){
+//		resyncUartReception();
+//		//HAL_UART_Receive_IT(&huart2, rx_buffer, RX_BUFFER_SIZE);
+//		printf("By uartCallback checkCRC rx_buffer error\r\n");
+//	}
+//}
+
+void systemTask(){
+	HAL_IWDG_Refresh(&hiwdg);
+    // Основная логика обработки
+    if(usb_ready) usbCallback();
+//    if(uart_rx_ready) uartCallback();
+
+	HAL_ADC_Start_DMA(&hadc1, adc1_buf, 1);
+	HAL_ADC_Start_DMA(&hadc2, adc2_buf, 4);
+
+    // Остальная периодическая логика
+//    if(temp_conversion_counter++ >= 100){
+//    	if(color_effect_mode){
+//    		if(color_effect_mode_changed){
+//    			color_effect_mode_changed = 0;
+//    			setRGBsmolder(&drvR, 0);
+//				setRGBsmolder(&drvG, 0);
+//				setRGBsmolder(&drvB, 0);
+//    		}
+//    		if(HAL_TIM_Base_GetState(&htim3) != HAL_TIM_STATE_BUSY) HAL_TIM_Base_Start_IT(&htim3);
+//    	}else  HAL_TIM_Base_Stop_IT(&htim3);
+//
+//        temp_conversion_counter = 0;
+//        HAL_GPIO_WritePin(RED_GPIO_Port, RED_Pin, GPIO_PIN_SET);
+//        tempConversion();
+//        HAL_GPIO_WritePin(RED_GPIO_Port, RED_Pin, GPIO_PIN_RESET);
+//        tecStateConversion(&tec1);
+//        tecStateConversion(&tec2);
+//        printf("tec1 - %s\r\n", getTECstateString(&tec1));
+//        printf("tec2 - %s\r\n", getTECstateString(&tec2));
+//        RGB_Task(&drvR);
+//        RGB_Task(&drvG);
+//        RGB_Task(&drvB);
+//        HAL_GPIO_TogglePin(GREEN_GPIO_Port, GREEN_Pin);
+//    }
+//
+//    tecPWMconversion(&tec1);
+//    tecPWMconversion(&tec2);
+}
+
+//void colorEffect(){
+//
+//	setRGBthreshold(&drvR, rx_buffer[color_effect_count+2]);
+//	setRGBthreshold(&drvG, rx_buffer[color_effect_count+3]);
+//	setRGBthreshold(&drvB, rx_buffer[color_effect_count+4]);
+////	setRGBthreshold(&drvR, 0);
+////	setRGBthreshold(&drvG, 0);
+////	setRGBthreshold(&drvB, 0);
+//	if(color_effect_count < 21) color_effect_count += 3;
+//
+//	else color_effect_count = 0;
+//}
+
+uint16_t crcCalculation(uint8_t* data){
+	uint16_t crc = 0;
+	for(uint8_t i = 0; i < 32; i++)
+		crc += data[i];
+	return crc;
+}
+
+bool checkCRC(uint8_t* data)
+{
+    uint16_t crc = 0;
+    for (uint8_t i = 0; i < 30; i++)
+    {
+        crc += data[i];
+    }
+    if (crc != (data[31]<<8 | data[30])) return false;
+    return true; // Placeholder: implement CRC check if needed
+}
+
+//void BuildConfigData(){
+//	memset(tx_buffer, 0, 32);
+//	uint16_t val = 0;
+//	uint32_t crc = 0;
+//
+//	tx_buffer[0] = 'C';
+//	tx_buffer[1] = 'o';
+//	tx_buffer[2] = getRGBthreshold(&drvR);
+//	tx_buffer[3] = getRGBthreshold(&drvG);
+//	tx_buffer[4] = getRGBthreshold(&drvB);
+//	val = getRGBdivider(&drvR);
+//	tx_buffer[5] = (uint8_t)(val & 0xFF);
+//	tx_buffer[6] = (uint8_t)((val >> 8) & 0xFF);
+//	val = getRGBdivider(&drvG);
+//	tx_buffer[7] = (uint8_t)(val & 0xFF);
+//	tx_buffer[8] = (uint8_t)((val >> 8) & 0xFF);
+//	val = getRGBdivider(&drvB);
+//	tx_buffer[9] = (uint8_t)(val & 0xFF);
+//	tx_buffer[10] = (uint8_t)((val >> 8) & 0xFF);
+//	val = getRGBsmolder(&drvR);
+//	tx_buffer[11] = (uint8_t)(val & 0xFF);
+//	tx_buffer[12] = (uint8_t)((val >> 8) & 0xFF);
+//	val = getRGBsmolder(&drvG);
+//	tx_buffer[13] = (uint8_t)(val & 0xFF);
+//	tx_buffer[14] = (uint8_t)((val >> 8) & 0xFF);
+//	val = getRGBsmolder(&drvB);
+//	tx_buffer[15] = (uint8_t)(val & 0xFF);
+//	tx_buffer[16] = (uint8_t)((val >> 8) & 0xFF);
+//	tx_buffer[17] = getTECset_current(&tec1);
+//	tx_buffer[18] = getTECset_current(&tec2);
+//	tx_buffer[19] = getTECset_temp(&tec1);
+//	tx_buffer[20] = getTECset_temp(&tec2);
+//
+//	crc = crcCalculation(tx_buffer);
+//	tx_buffer[30] = (uint8_t)(crc & 0xFF);
+//	tx_buffer[31] = (uint8_t)((crc >> 8) & 0xFF);
+//}
+
+//void BuildControlData(){
+//	memset(tx_buffer, 0, 32);
+//	uint32_t crc = 0;
+//	uint16_t val = 0;
+//
+//	if(config_saved){
+//		config_saved = 0;
+//		tx_buffer[0] = 'c';
+//		tx_buffer[1] = 'S';
+//		//return;
+//	}else{
+//		tx_buffer[0] = 'D';
+//		tx_buffer[1] = 'a';
+//	}
+//
+//	tx_buffer[2] = getTECtemp(&tec1);
+//	tx_buffer[3] = ds18b20_get_temp_int(&ts2);
+//	tx_buffer[4] = getTECtemp(&tec2);
+//	tx_buffer[5] = getTECcurrent(&tec1);
+//	tx_buffer[6] = getTECcurrent(&tec2);
+//	tx_buffer[7] = getTECstate(&tec1);
+//	tx_buffer[8] = getTECstate(&tec2);
+//	val = getRGBcurrent(&drvR);
+//	tx_buffer[9] = (uint8_t)(val & 0xFF);
+//	tx_buffer[10] = (uint8_t)((val >> 8) & 0xFF);
+//	val = getRGBcurrent(&drvG);
+//	tx_buffer[11] = (uint8_t)(val & 0xFF);
+//	tx_buffer[12] = (uint8_t)((val >> 8) & 0xFF);
+//	val = getRGBcurrent(&drvB);
+//	tx_buffer[13] = (uint8_t)(val & 0xFF);
+//	tx_buffer[14] = (uint8_t)((val >> 8) & 0xFF);
+//
+//	crc = crcCalculation(tx_buffer);
+//	tx_buffer[30] = (uint8_t)(crc & 0xFF);
+//	tx_buffer[31] = (uint8_t)((crc >> 8) & 0xFF);
+//}
+
+//void setData(uint8_t* data){
+//	if(!checkCRC(data)){
+//		printf("By setData checkCRC error\r\n");
+//		return;
+//	}
+//	if(data[24]){
+//		setRGBpwmPeriod(&drvR, data[17]);
+//		setRGBpwmPeriod(&drvG, data[18]);
+//		setRGBpwmPeriod(&drvB, data[19]);
+//		HAL_Delay(10);
+//		setRGBsmolder(&drvR, 0);
+//		setRGBsmolder(&drvG, 0);
+//		setRGBsmolder(&drvB, 0);
+//		setRGBthreshold(&drvR, 255);
+//		setRGBthreshold(&drvG, 255);
+//		setRGBthreshold(&drvB, 255);
+//
+//	}
+//	else{
+//		setRGBthreshold(&drvR, data[2]);
+//		setRGBthreshold(&drvG, data[3]);
+//		setRGBthreshold(&drvB, data[4]);
+//		setRGBsmolder(&drvR, (data[11]<<8) | data[12]);
+//		setRGBsmolder(&drvG, (data[13]<<8) | data[14]);
+//		setRGBsmolder(&drvB, (data[15]<<8) | data[16]);
+//		setRGBpwmPeriod(&drvR, 100);
+//		setRGBpwmPeriod(&drvG, 100);
+//		setRGBpwmPeriod(&drvB, 100);
+//	}
+//	setRGBdivider(&drvR, (data[5]<<8) | data[6]);
+//	setRGBdivider(&drvG, (data[7]<<8) | data[8]);
+//	setRGBdivider(&drvB, (data[9]<<8) | data[10]);
+//	setTECtemp(&tec1, data[20]);
+//	setTECtemp(&tec2, data[21]);
+//	setTECcurrent(&tec1, data[22]);
+//	setTECcurrent(&tec2, data[23]);
+//	//setRGBpwmMode(&drvR, data[24]);
+//	//setRGBpwmMode(&drvG, data[24]);
+//	//setRGBpwmMode(&drvB, data[24]);
+//	if(data[29] > 0)
+//		if(saveConfigToEE())
+//			config_saved = 1;
+//}
+
+//void tempConversion(){
+//	float temp1, temp2, temp3;
+//	printf("\r\ntempConversion\r\n");
+//	ds18b20_start_conversion(&ts1);
+//	ds18b20_start_conversion(&ts2);
+//	ds18b20_start_conversion(&ts3);
+//	temp1 = ds18b20_get_temp_float(&ts1);
+//	temp2 = ds18b20_get_temp_float(&ts2);
+//	temp3 = ds18b20_get_temp_float(&ts3);
+//
+//	if(ds18b20_is_error(&ts1))	printf("ts1 error - %s\r\n", ds18b20_get_error_string(&ts1));
+//	else 						printf("ts1->%.1f\r\n", temp1);
+//
+//	if(ds18b20_is_error(&ts2))	printf("ts2 error - %s\r\n", ds18b20_get_error_string(&ts2));
+//	else 						printf("ts2->%.1f\r\n", temp2);
+//
+//	if(ds18b20_is_error(&ts3))	printf("ts3 error - %s\r\n", ds18b20_get_error_string(&ts3));
+//	else 						printf("ts3->%.1f\r\n", temp3);
+//
+//}
+bool saveConfigToEE(){
+	bool result = 1;
+//	if(SaveRGBconfigToEEPROM(&eeprom, &drvR, RGB_FIRST_EE_PAGE_NUM) != HAL_OK) result = 0;
+//	if(SaveRGBconfigToEEPROM(&eeprom, &drvG, RGB_FIRST_EE_PAGE_NUM + 1) != HAL_OK) result = 0;
+//	if(SaveRGBconfigToEEPROM(&eeprom, &drvB, RGB_FIRST_EE_PAGE_NUM + 2) != HAL_OK) result = 0;
+//	if(SaveTECconfigToEEPROM(&eeprom, &tec1, TEC_FIRST_EE_PAGE_NUM) != HAL_OK) result = 0;
+//	if(SaveTECconfigToEEPROM(&eeprom, &tec2, TEC_FIRST_EE_PAGE_NUM + 1) != HAL_OK) result = 0;
+	return result;
+}
