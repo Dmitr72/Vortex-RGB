@@ -11,17 +11,16 @@
 
 
 bool RGB_Init(RGB_channel* rgb,
-			uint16_t set_current,
+			uint16_t max_current,
 			AD5160_HandleTypeDef* threshold_had,
 			DAC8551_HandleTypeDef* divider_dac,
 			DAC_HandleTypeDef* smolder_dac, uint32_t smolder_dac_channel,
 			COMP_HandleTypeDef* smolder_comp,
-//			TIM_HandleTypeDef* pwm_timer, uint32_t pwm_timer_channel,
-			ADC_HandleTypeDef *hadc,
-			uint32_t* adc_buffer,
+			uint32_t* adc_buffer_pwr,
+			uint32_t* adc_buffer_shunt,
+			float* mod_temp,
+			float* rad_temp,
 			uint16_t shunt,
-//			ds18b20_device_t* ts_module,
-//			ds18b20_device_t* ts_radiator,
 			EEprom_HandleTypeDef* ee,
 			uint16_t eeprom_page_num)
 {
@@ -30,7 +29,7 @@ bool RGB_Init(RGB_channel* rgb,
 	rgb->threshold = buf[0];
 	rgb->divider = buf[2] <<8 | buf[1];
 	rgb->smolder = buf[4] <<8 | buf[3];
-	rgb->set_current = set_current;//buf[6] <<8 | buf[5];
+	rgb->max_current = max_current;//buf[6] <<8 | buf[5];
 	//memcpy(&rgb->set_current, &buf[5], sizeof(float));
 
 	rgb->threshold_had = threshold_had;
@@ -38,14 +37,9 @@ bool RGB_Init(RGB_channel* rgb,
 	rgb->smolder_dac = smolder_dac;
 	rgb->smolder_dac_channel = smolder_dac_channel;
 	rgb->smolder_comp = smolder_comp;
-	rgb->adc_buffer = adc_buffer;
-//	rgb->pwm_timer = pwm_timer;
-//	rgb->pwm_timer_channel = pwm_timer_channel;
+	rgb->adc_buffer_pwr = adc_buffer_pwr;
+	rgb->adc_buffer_shunt = adc_buffer_shunt;
 	rgb->shunt = shunt;
-//	rgb->ts_module = ts_module;
-//	rgb->ts_radiator = ts_radiator;
-//	rgb->temp_error = 0;
-//	rgb->pwm_mode = 0;
 
 	DAC_ChannelConfTypeDef sConfig = {0};
 	sConfig.DAC_OutputBuffer = DAC_OUTPUTBUFFER_DISABLE;
@@ -53,8 +47,6 @@ bool RGB_Init(RGB_channel* rgb,
 	HAL_DAC_SetValue(rgb->smolder_dac, smolder_dac_channel, DAC_ALIGN_12B_R, 0);
 	HAL_DAC_Start(rgb->smolder_dac, rgb->smolder_dac_channel);
 	HAL_COMP_Start(rgb->smolder_comp);
-//	rgb->pwm_timer->Instance->ARR = 100-1;//(HAL_RCC_GetHCLKFreq()/RGB_PWM_TIMER_FREQUENZ)-1;
-//	HAL_TIM_PWM_Start(rgb->pwm_timer, rgb->pwm_timer_channel);
 	setRGBsmolder(rgb, rgb->smolder);
 	setRGBdivider(rgb, rgb->divider);
 	setRGBthreshold(rgb, rgb->threshold);
@@ -116,12 +108,12 @@ uint16_t getRGBsmolder(RGB_channel* rgb){
 
 // Return value in milliampers
 uint16_t getRGBcurrent(RGB_channel* rgb){
-	rgb->actual_current = (uint32_t)(*rgb->adc_buffer * 65.20 / rgb->shunt);
+//	rgb->actual_current = (uint32_t)(*rgb->adc_buffer * 65.20 / rgb->shunt);
 	return rgb->actual_current;
 }
 
 uint16_t getRGBsetCurrent(RGB_channel* rgb){
-	return rgb->set_current;
+//	return rgb->set_current;
 }
 
 void setRGBpwmMode(RGB_channel* rgb, uint8_t mode){
