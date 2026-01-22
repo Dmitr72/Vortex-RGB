@@ -7,6 +7,7 @@
 
 #include "system.h"
 #include "usbd_cdc_if.h"
+#include "custom_bus.h"
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>

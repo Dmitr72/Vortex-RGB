@@ -8,22 +8,12 @@
 #ifndef RGB_RGB_H_
 #define RGB_RGB_H_
 
-//#include "system.h"
 #include <stdint.h>
 #include <stdbool.h>
 #include "ad5160.h"
 #include "dac8551.h"
-//#include "ds18b20.h"
 #include "ee.h"
 
-// Forward declarations для HAL структур
-//typedef struct __DAC_HandleTypeDef DAC_HandleTypeDef;
-//typedef struct __COMP_HandleTypeDef COMP_HandleTypeDef;
-//typedef struct __TIM_HandleTypeDef TIM_HandleTypeDef;
-//typedef struct __ADC_HandleTypeDef ADC_HandleTypeDef;
-
-//#define RGB_PWM_TIMER htim2	//tim_arr = (HAL_RCC_GetHCLKFreq()/TEC_FREQUENZ)-1;
-//#define RGB_PWM_TIMER_FREQUENZ 10000
 #define RGB_SHUNT_MULTIPLIER 20	//shunt voltage amplifier multiplier
 #define RGB_FIRST_EE_PAGE_NUM 1
 #define RGB_EE_CHECK_DIGIT 0xAA55

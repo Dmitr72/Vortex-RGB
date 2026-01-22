@@ -1,6 +1,7 @@
 "./Core/AD5160/ad5160.o"
 "./Core/DAC8551/dac8551.o"
 "./Core/Eeprom/ee.o"
+"./Core/FDCAN/fdcan.o"
 "./Core/RGB/rgb.o"
 "./Core/Src/custom_bus.o"
 "./Core/Src/main.o"

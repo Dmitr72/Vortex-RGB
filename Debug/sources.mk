@@ -25,6 +25,7 @@ SUBDIRS := \
 Core/AD5160 \
 Core/DAC8551 \
 Core/Eeprom \
+Core/FDCAN \
 Core/RGB \
 Core/Src \
 Core/Startup \

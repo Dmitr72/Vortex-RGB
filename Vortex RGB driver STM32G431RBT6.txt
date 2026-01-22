@@ -1,6 +1,6 @@
 Configuration	Vortex RGB driver STM32G431RBT6
 STM32CubeMX 	6.16.0
-Date	01/20/2026
+Date	01/22/2026
 MCU	STM32G431RBTx
 
 
@@ -12,6 +12,8 @@ ADC1	IN6 Single-ended	ADC1_IN6	PC0
 ADC1	IN7 Single-ended	ADC1_IN7	PC1
 ADC1	IN8 Single-ended	ADC1_IN8	PC2
 ADC1	IN9 Single-ended	ADC1_IN9	PC3
+ADC1	Temperature Sensor Channel	ADC1_TempSens_Input	VP_ADC1_TempSens_Input
+ADC1	Vbat Channel	ADC1_Vbat_Input	VP_ADC1_Vbat_Input
 ADC2	IN4 Differential	ADC2_IN4	PA7
 ADC2	IN4 Differential	ADC2_IN5	PC4
 ADC2	IN11 Single-ended	ADC2_IN11	PC5
@@ -109,6 +111,8 @@ ADC1	IN6 Single-ended	ADC1_IN6	PC0
 ADC1	IN7 Single-ended	ADC1_IN7	PC1
 ADC1	IN8 Single-ended	ADC1_IN8	PC2
 ADC1	IN9 Single-ended	ADC1_IN9	PC3
+ADC1	Temperature Sensor Channel	ADC1_TempSens_Input	VP_ADC1_TempSens_Input
+ADC1	Vbat Channel	ADC1_Vbat_Input	VP_ADC1_Vbat_Input
 ADC2	IN4 Differential	ADC2_IN4	PA7
 ADC2	IN4 Differential	ADC2_IN5	PC4
 ADC2	IN11 Single-ended	ADC2_IN11	PC5

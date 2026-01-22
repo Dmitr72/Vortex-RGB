@@ -21,6 +21,7 @@ RM := rm -rf
 -include Core/Startup/subdir.mk
 -include Core/Src/subdir.mk
 -include Core/RGB/subdir.mk
+-include Core/FDCAN/subdir.mk
 -include Core/Eeprom/subdir.mk
 -include Core/DAC8551/subdir.mk
 -include Core/AD5160/subdir.mk
