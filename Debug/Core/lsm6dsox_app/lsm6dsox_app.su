@@ -1,0 +1,2 @@
+../Core/lsm6dsox_app/lsm6dsox_app.c:14:5:LSM6DSOX_ReadAcceleration	16	static
+../Core/lsm6dsox_app/lsm6dsox_app.c:38:5:LSM6DSOX_ReadGyroscope	16	static

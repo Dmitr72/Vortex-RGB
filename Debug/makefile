@@ -9,12 +9,14 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include X-CUBE-MEMS1/Target/subdir.mk
 -include USB_Device/Target/subdir.mk
 -include USB_Device/App/subdir.mk
 -include Middlewares/ST/STM32_USB_Device_Library/Core/Src/subdir.mk
 -include Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/subdir.mk
 -include Drivers/STM32G4xx_HAL_Driver/Src/subdir.mk
 -include Drivers/BSP/Components/lsm6dsox/subdir.mk
+-include Core/lsm6dsox_app/subdir.mk
 -include Core/System/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/subdir.mk

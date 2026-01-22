@@ -28,6 +28,8 @@ Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.o: \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_adc_ex.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_comp.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_ll_exti.h \
+ ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_crc.h \
+ ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_crc_ex.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_dac.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_dac_ex.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_exti.h \
@@ -79,6 +81,8 @@ Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.o: \
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_adc_ex.h:
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_comp.h:
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_ll_exti.h:
+../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_crc.h:
+../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_crc_ex.h:
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_dac.h:
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_dac_ex.h:
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_exti.h:

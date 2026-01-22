@@ -29,10 +29,12 @@ Core/RGB \
 Core/Src \
 Core/Startup \
 Core/System \
+Core/lsm6dsox_app \
 Drivers/BSP/Components/lsm6dsox \
 Drivers/STM32G4xx_HAL_Driver/Src \
 Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src \
 Middlewares/ST/STM32_USB_Device_Library/Core/Src \
 USB_Device/App \
 USB_Device/Target \
+X-CUBE-MEMS1/Target \
 

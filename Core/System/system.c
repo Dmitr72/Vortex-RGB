@@ -7,8 +7,6 @@
 
 #include "system.h"
 #include "usbd_cdc_if.h"
-#include "custom_mems_conf.h"
-#include "lsm6dsox.h"
 #include <stdio.h>
 
 uint8_t tx_buffer[TX_BUFFER_SIZE];
@@ -17,21 +15,8 @@ uint8_t usb_ready=0;
 uint8_t uart_rx_ready=0;
 uint8_t uart_tx_ready=0;
 
-
-LSM6DSOX_Object_t gyro_obj;
-
-
-  // Регистрация интерфейса
-//  if (LSM6DSOX_RegisterBusIO(&gyro_obj, &io_ctx) != LSM6DSOX_OK) {
-//      printf("Ошибка регистрации интерфейса SPI\n");
-//  }
-
 EEprom_HandleTypeDef eeprom;
-//ds18b20_device_t ts1;
-//ds18b20_device_t ts2;
-//ds18b20_device_t ts3;
-//TEC_device_t tec1;
-//TEC_device_t tec2;
+
 AD5160_HandleTypeDef hadR;
 AD5160_HandleTypeDef hadG;
 AD5160_HandleTypeDef hadB;
@@ -46,151 +31,15 @@ bool color_effect_mode = 0;
 bool color_effect_mode_changed = 0;
 uint8_t color_effect_count = 0;
 
-//float radiator_temperature = 24;
 uint32_t adc1_buf[7];
 uint32_t adc2_buf[5];
 
-//uint8_t temp_conversion_counter = 0;
-
 bool config_saved = 0;
-
-void InitGyroscope(void) {
-    LSM6DSOX_IO_t io_ctx;          // Структура интерфейса
-    //LSM6DSOX_Object_t gyro_obj;    // Объект гироскопа
-
-    // Настройка интерфейса
-    io_ctx.BusType = LSM6DSOX_SPI_4WIRES_BUS; // Указываем использовать SPI в 4-проводном режиме
-    io_ctx.Init = BSP_SPI1_Init;             // Функция инициализации SPI
-    io_ctx.DeInit = BSP_SPI1_DeInit;         // Деинициализация SPI
-    io_ctx.WriteReg = BSP_SPI1_Send;     // Функция записи в регистр
-    io_ctx.ReadReg = BSP_SPI1_Recv;       // Функция чтения из регистра
-    io_ctx.GetTick = BSP_GetTick;            // Таймер для отслеживания времени
-
-    // Регистрация интерфейса в объекте гироскопа
-    if (LSM6DSOX_RegisterBusIO(&gyro_obj, &io_ctx) != LSM6DSOX_OK) {
-        printf("Ошибка регистрации интерфейса SPI\n");
-        return;
-    }
-
-    // Инициализация гироскопа
-    if (LSM6DSOX_Init(&gyro_obj) != LSM6DSOX_OK) {
-        printf("Ошибка инициализации гироскопа\n");
-        return;
-    }
-
-    printf("Гироскоп успешно инициализирован!\n");
-
-//    if (LSM6DSOX_GYRO_SetOutputDataRate(&gyro_obj, 104.0f) != LSM6DSOX_OK) {
-//        printf("Ошибка установки частоты обновления гироскопа\n");
-//    }
-    if (LSM6DSOX_GYRO_Enable(&gyro_obj) != LSM6DSOX_OK) {
-        printf("Ошибка включения гироскопа\n");
-    }
-    uint8_t gyro_id = 0;
-    if (LSM6DSOX_ReadID(&gyro_obj, &gyro_id) != LSM6DSOX_OK) {
-    	printf("ID read error\n");
-    }
-
-    printf("ID-%d\n", gyro_id);
-}
 
 void systemTask(){
 	HAL_IWDG_Refresh(&hiwdg);
-
-	ReadGyroscopeData();
-    // Основная логика обработки
-    //if(usb_ready) usbCallback();
-//    if(uart_rx_ready) uartCallback();
-
 	HAL_ADC_Start_DMA(&hadc1, adc1_buf, 7);
 	HAL_ADC_Start_DMA(&hadc2, adc2_buf, 5);
-
-    // Остальная периодическая логика
-//    if(temp_conversion_counter++ >= 100){
-//    	if(color_effect_mode){
-//    		if(color_effect_mode_changed){
-//    			color_effect_mode_changed = 0;
-//    			setRGBsmolder(&drvR, 0);
-//				setRGBsmolder(&drvG, 0);
-//				setRGBsmolder(&drvB, 0);
-//    		}
-//    		if(HAL_TIM_Base_GetState(&htim3) != HAL_TIM_STATE_BUSY) HAL_TIM_Base_Start_IT(&htim3);
-//    	}else  HAL_TIM_Base_Stop_IT(&htim3);
-//
-//        temp_conversion_counter = 0;
-//        HAL_GPIO_WritePin(RED_GPIO_Port, RED_Pin, GPIO_PIN_SET);
-//        tempConversion();
-//        HAL_GPIO_WritePin(RED_GPIO_Port, RED_Pin, GPIO_PIN_RESET);
-//        tecStateConversion(&tec1);
-//        tecStateConversion(&tec2);
-//        printf("tec1 - %s\r\n", getTECstateString(&tec1));
-//        printf("tec2 - %s\r\n", getTECstateString(&tec2));
-//        RGB_Task(&drvR);
-//        RGB_Task(&drvG);
-//        RGB_Task(&drvB);
-//        HAL_GPIO_TogglePin(GREEN_GPIO_Port, GREEN_Pin);
-//    }
-//
-//    tecPWMconversion(&tec1);
-//    tecPWMconversion(&tec2);
-}
-
-//void InitGyroscope(void)
-//{
-//    int32_t ret;
-//
-//    printf("Начало инициализации гироскопа...\n");
-//    ret = LSM6DSOX_Init(&gyro_obj);
-//    if (ret != LSM6DSOX_OK)
-//    {
-//        printf("Ошибка инициализации гироскопа\n");
-//        return;
-//    }
-//    printf("Инициализация гироскопа завершена успешно\n");
-//
-//    printf("Установка частоты вывода данных...\n");
-//    ret = LSM6DSOX_GYRO_SetOutputDataRate(&gyro_obj, 104.0f); // Пример: 104 Hz
-//    if (ret != LSM6DSOX_OK)
-//    {
-//        printf("Ошибка установки частоты обновления\n");
-//        return;
-//    }
-//    printf("Частота вывода данных установлена успешно\n");
-//
-//    printf("Установка диапазона измерений...\n");
-//    ret = LSM6DSOX_GYRO_SetFullScale(&gyro_obj, LSM6DSOX_2000dps); // ±2000°/с
-//    if (ret != LSM6DSOX_OK)
-//    {
-//        printf("Ошибка установки диапазона гироскопа\n");
-//        return;
-//    }
-//    printf("Диапазон измерений установлен успешно\n");
-//
-//    printf("Включение гироскопа...\n");
-//    ret = LSM6DSOX_GYRO_Enable(&gyro_obj);
-//    if (ret != LSM6DSOX_OK)
-//    {
-//        printf("Ошибка включения гироскопа\n");
-//    }
-//    printf("Гироскоп включен успешно\n");
-//}
-
-void ReadGyroscopeData(void)
-{
-    LSM6DSOX_Axes_t angular_rate;
-    int32_t ret;
-
-    // Читаем текущие значения по осям
-    ret = LSM6DSOX_GYRO_GetAxes(&gyro_obj, &angular_rate);
-    if (ret != LSM6DSOX_OK)
-    {
-        printf("Ошибка считывания данных с гироскопа\n");
-        return;
-    }
-
-    // Выводим значения на каждой оси
-    printf("Gyroscope Data - X: %ld, Y: %ld, Z: %ld\n",
-           angular_rate.x, angular_rate.y, angular_rate.z);
 }
 
 void systemInit(){
@@ -216,12 +65,12 @@ void systemInit(){
 		}
 
 	}else printf("EEPROM initialization successful\n");
-	HAL_IWDG_Refresh(&hiwdg);
+
+	uint32_t res = BSP_SPI1_Init();
+	printf("BSP_SPI1_Init = %lu\n", res);
 
 	HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
 	HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);
-	//HAL_ADC_Start_DMA(&hadc1, adc1_buf, 7);
-	//HAL_ADC_Start_DMA(&hadc2, adc2_buf, 5);
 	HAL_IWDG_Refresh(&hiwdg);
 
 	//Initialization of Laser drivers
@@ -234,19 +83,11 @@ void systemInit(){
 //	RGB_Init(&drvR, 1150, &hadR, &hdacR, &hdac4, DAC_CHANNEL_1, &hcomp7, &htim2, TIM_CHANNEL_4, &hadc2, &adc2_buf[1], 200, &ts3, &ts2, &eeprom, RGB_FIRST_EE_PAGE_NUM);
 //	RGB_Init(&drvG, 2200, &hadG, &hdacG, &hdac1, DAC_CHANNEL_2, &hcomp5, &htim2, TIM_CHANNEL_3, &hadc2, &adc2_buf[2], 100, &ts1, &ts2, &eeprom, RGB_FIRST_EE_PAGE_NUM + 1);
 //	RGB_Init(&drvB, 3600, &hadB, &hdacB, &hdac3, DAC_CHANNEL_2, &hcomp4, &htim2, TIM_CHANNEL_1, &hadc2, &adc2_buf[3], 50, &ts1, &ts2, &eeprom, RGB_FIRST_EE_PAGE_NUM + 2);
-
 	HAL_IWDG_Refresh(&hiwdg);
 
 	HAL_Delay(500);
-
-	//HAL_TIM_Base_Start(&htim7);	//TEC DC power module PWM period conversion timer
-	//HAL_UART_Receive_IT(&huart2, rx_buffer, RX_BUFFER_SIZE);
 	HAL_IWDG_Refresh(&hiwdg);
-	//HAL_TIM_Base_Start(&htim5);
-	InitGyroscope();
 }
-
-
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc){
 	if(hadc == &hadc1) HAL_GPIO_TogglePin(GREEN_GPIO_Port, GREEN_Pin);
