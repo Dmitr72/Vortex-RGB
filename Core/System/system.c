@@ -38,9 +38,12 @@ uint8_t color_effect_count = 0;
 uint32_t adc1_buf[7];
 uint32_t adc2_buf[5];
 
+uint8_t can_buf[8] = {0};
+
 bool config_saved = 0;
 
 void systemTask(){
+	//FDCAN_SendMessage(1, can_buf, 8);
 	HAL_IWDG_Refresh(&hiwdg);
 	HAL_ADC_Start_DMA(&hadc1, adc1_buf, 7);
 	HAL_ADC_Start_DMA(&hadc2, adc2_buf, 5);
@@ -72,6 +75,8 @@ void systemInit(){
 
 	uint32_t res = BSP_SPI1_Init();
 	printf("BSP_SPI1_Init = %lu\n", res);
+
+	FDCAN_Init();
 
 	HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
 	HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);

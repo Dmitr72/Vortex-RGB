@@ -12,5 +12,6 @@
 
 void FDCAN_Init(void);
 void ProcessFDCANMessage(uint32_t id, uint8_t *data, uint8_t length);
+void FDCAN_SendMessage(uint32_t id, uint8_t *data, uint8_t size);
 
 #endif /* FDCAN_FDCAN_H_ */
