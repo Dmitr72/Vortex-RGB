@@ -8,6 +8,8 @@
 #include "system.h"
 #include "usbd_cdc_if.h"
 #include <stdio.h>
+#include <stdint.h>
+#include <stdbool.h>
 
 uint8_t tx_buffer[TX_BUFFER_SIZE];
 uint8_t rx_buffer[RX_BUFFER_SIZE];
@@ -367,26 +369,7 @@ bool checkCRC(uint8_t* data)
 //			config_saved = 1;
 //}
 
-//void tempConversion(){
-//	float temp1, temp2, temp3;
-//	printf("\r\ntempConversion\r\n");
-//	ds18b20_start_conversion(&ts1);
-//	ds18b20_start_conversion(&ts2);
-//	ds18b20_start_conversion(&ts3);
-//	temp1 = ds18b20_get_temp_float(&ts1);
-//	temp2 = ds18b20_get_temp_float(&ts2);
-//	temp3 = ds18b20_get_temp_float(&ts3);
-//
-//	if(ds18b20_is_error(&ts1))	printf("ts1 error - %s\r\n", ds18b20_get_error_string(&ts1));
-//	else 						printf("ts1->%.1f\r\n", temp1);
-//
-//	if(ds18b20_is_error(&ts2))	printf("ts2 error - %s\r\n", ds18b20_get_error_string(&ts2));
-//	else 						printf("ts2->%.1f\r\n", temp2);
-//
-//	if(ds18b20_is_error(&ts3))	printf("ts3 error - %s\r\n", ds18b20_get_error_string(&ts3));
-//	else 						printf("ts3->%.1f\r\n", temp3);
-//
-//}
+
 bool saveConfigToEE(){
 	bool result = 1;
 //	if(SaveRGBconfigToEEPROM(&eeprom, &drvR, RGB_FIRST_EE_PAGE_NUM) != HAL_OK) result = 0;
