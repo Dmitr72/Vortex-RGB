@@ -8,6 +8,7 @@
 #ifndef FDCAN_FDCAN_H_
 #define FDCAN_FDCAN_H_
 
+#include "main.h"
 
 
 #endif /* FDCAN_FDCAN_H_ */

@@ -426,17 +426,123 @@ Discarded input sections
  .debug_macro   0x00000000      0x306 ./Core/Eeprom/ee.o
  .debug_macro   0x00000000      0x157 ./Core/Eeprom/ee.o
  .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
+ .group         0x00000000        0xc ./Core/FDCAN/fdcan.o
  .text          0x00000000        0x0 ./Core/FDCAN/fdcan.o
  .data          0x00000000        0x0 ./Core/FDCAN/fdcan.o
  .bss           0x00000000        0x0 ./Core/FDCAN/fdcan.o
- .debug_info    0x00000000       0x22 ./Core/FDCAN/fdcan.o
- .debug_abbrev  0x00000000       0x12 ./Core/FDCAN/fdcan.o
+ .debug_info    0x00000000       0x70 ./Core/FDCAN/fdcan.o
+ .debug_abbrev  0x00000000       0x28 ./Core/FDCAN/fdcan.o
  .debug_aranges
                 0x00000000       0x18 ./Core/FDCAN/fdcan.o
- .debug_macro   0x00000000       0x1b ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000      0x29d ./Core/FDCAN/fdcan.o
  .debug_macro   0x00000000      0xad8 ./Core/FDCAN/fdcan.o
- .debug_line    0x00000000       0x41 ./Core/FDCAN/fdcan.o
- .debug_str     0x00000000     0x2eb1 ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000      0x18b ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000       0x2e ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000       0x28 ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000       0x22 ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000       0x8e ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000       0x51 ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000      0x103 ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000       0x6a ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000      0x1df ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000       0x1c ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000       0x22 ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000       0xfb ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000     0x1011 ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000      0x11f ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000    0x1138f ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000       0x6d ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000     0x3558 ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000      0x190 ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000       0x5c ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000     0x141d ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000      0x535 ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000      0x1b6 ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000      0x288 ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000      0x41d ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000      0x18b ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000       0x43 ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000      0x23d ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000     0x1112 ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000      0x72e ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000      0x391 ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000      0x11d ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000      0x401 ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000       0xc7 ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000       0x4c ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000      0x209 ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000      0x108 ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000      0x211 ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000      0x6bd ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000      0x401 ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000      0x107 ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000       0x85 ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000      0x22c ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000       0x61 ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000       0xa5 ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000       0x73 ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000      0x22d ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000      0x122 ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000      0x3d1 ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000      0x2fe ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000      0x693 ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000       0xa6 ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000      0x306 ./Core/FDCAN/fdcan.o
+ .debug_macro   0x00000000      0x157 ./Core/FDCAN/fdcan.o
+ .debug_line    0x00000000      0x8cf ./Core/FDCAN/fdcan.o
+ .debug_str     0x00000000    0xd5aba ./Core/FDCAN/fdcan.o
  .comment       0x00000000       0x44 ./Core/FDCAN/fdcan.o
  .ARM.attributes
                 0x00000000       0x34 ./Core/FDCAN/fdcan.o
