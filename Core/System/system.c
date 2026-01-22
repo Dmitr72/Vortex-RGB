@@ -8,6 +8,7 @@
 #include "system.h"
 #include "usbd_cdc_if.h"
 #include "custom_bus.h"
+#include "fdcan.h"
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
@@ -96,6 +97,41 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc){
 	if(hadc == &hadc1) HAL_GPIO_TogglePin(GREEN_GPIO_Port, GREEN_Pin);
 }
 
+/**
+ * @brief FDCAN1 RX FIFO 0 message received callback.
+ * @param hfdcan: pointer to a FDCAN_HandleTypeDef structure.
+ * @param RxFifo0ITs: specifies the pending interrupt.
+ */
+void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs) {
+    if ((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != 0) {
+        FDCAN_RxHeaderTypeDef RxHeader;
+        uint8_t RxData[64]; // Buffer for received data
+
+        // Retrieve the message from RX FIFO 0
+        if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, RxData) == HAL_OK) {
+            // Process the received message
+            ProcessFDCANMessage(RxHeader.Identifier, RxData, RxHeader.DataLength >> 16);
+        }
+    }
+}
+
+/**
+ * @brief FDCAN1 RX FIFO 1 message received callback.
+ * @param hfdcan: pointer to a FDCAN_HandleTypeDef structure.
+ * @param RxFifo1ITs: specifies the pending interrupt.
+ */
+void HAL_FDCAN_RxFifo1Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo1ITs) {
+    if ((RxFifo1ITs & FDCAN_IT_RX_FIFO1_NEW_MESSAGE) != 0) {
+        FDCAN_RxHeaderTypeDef RxHeader;
+        uint8_t RxData[64]; // Buffer for received data
+
+        // Retrieve the message from RX FIFO 1
+        if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO1, &RxHeader, RxData) == HAL_OK) {
+            // Process message
+            ProcessFDCANMessage(RxHeader.Identifier, RxData, RxHeader.DataLength >> 16);
+        }
+    }
+}
 //void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 //	//if(huart==&huart2){
 //		uart_rx_ready = 1;

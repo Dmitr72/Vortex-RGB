@@ -10,5 +10,7 @@
 
 #include "main.h"
 
+void FDCAN_Init(void);
+void ProcessFDCANMessage(uint32_t id, uint8_t *data, uint8_t length);
 
 #endif /* FDCAN_FDCAN_H_ */
