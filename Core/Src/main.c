@@ -141,6 +141,7 @@ int main(void)
 
 
   systemInit();
+  HAL_Delay(500);
   /* USER CODE END 2 */
 
   /* Infinite loop */
