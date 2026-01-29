@@ -20,8 +20,8 @@ Vortex-RGB is a high-performance RGB LED/laser driver firmware for the STM32G431
   - Maximum current control via 16-bit DAC (DAC8551)
   - Smolder/cutoff adjustment via internal DAC
   - Current monitoring with shunt resistors (20x amplifier)
-  - Maximum current limits: R=1150mA, G=2200mA, B=3600mA
-  - Shunt values: R=200mΩ, G=100mΩ, B=50mΩ
+  - Maximum current limits: R=1150 mA, G=2200 mA, B=3600 mA
+  - Shunt values: R=200 mΩ, G=100 mΩ, B=50 mΩ
 
 ### Peripherals and Interfaces
 - **ADC**: Dual ADC (ADC1, ADC2) with DMA for current and voltage monitoring
@@ -52,7 +52,7 @@ Vortex-RGB is a high-performance RGB LED/laser driver firmware for the STM32G431
   - Threshold: R_TH_CS (PC6), G_TH_CS (PB12), B_TH_CS (PC14)
   - Divider: R_DIV_CS (PC7), G_DIV_CS (PB13), B_DIV_CS (PC15)
   - Gyroscope: GYRO_CS (PD2)
-- **Interrupts**: LICHTSC_C (PC13), GYRO_INT (PC12)
+- **Interrupts**: LICHTSC_C (PC13) - Light sensor/control, GYRO_INT (PC12) - Gyroscope interrupt
 
 ## Project Structure
 
@@ -140,7 +140,7 @@ See `Vortex RGB driver STM32G431RBT6.txt` for complete pin mapping details.
 - **Watchdog Timer**: Independent watchdog prevents system hang
 - **Temperature Monitoring**: Protection against overheating
 - **Current Monitoring**: Real-time current measurement for each channel
-- **Comparator-based Cutoff**: Hardware-assisted minimum modulation control
+- **Comparator-based Cutoff**: Hardware-assisted smolder/cutoff control
 
 ## Usage
 
