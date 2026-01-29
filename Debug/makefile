@@ -73,8 +73,8 @@ all: main-build
 main-build: Vortex\ RGB\ driver\ STM32G431RBT6.elf secondary-outputs
 
 # Tool invocations
-Vortex\ RGB\ driver\ STM32G431RBT6.elf Vortex\ RGB\ driver\ STM32G431RBT6.map: $(OBJS) $(USER_OBJS) D:\Clod\STM32CubeIDE\workspace_cloud\Vortex\ RGB\ driver\ STM32G431RBT6\STM32G431RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "Vortex RGB driver STM32G431RBT6.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\Clod\STM32CubeIDE\workspace_cloud\Vortex RGB driver STM32G431RBT6\STM32G431RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Vortex RGB driver STM32G431RBT6.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Vortex\ RGB\ driver\ STM32G431RBT6.elf Vortex\ RGB\ driver\ STM32G431RBT6.map: $(OBJS) $(USER_OBJS) D:\Nextcloud\Arctos\Arctos\Optik\STM32CubeIDE\workspace_cloud\Vortex\ RGB\ driver\ STM32G431RBT6\STM32G431RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "Vortex RGB driver STM32G431RBT6.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\Nextcloud\Arctos\Arctos\Optik\STM32CubeIDE\workspace_cloud\Vortex RGB driver STM32G431RBT6\STM32G431RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Vortex RGB driver STM32G431RBT6.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
