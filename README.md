@@ -55,7 +55,7 @@ There are several ways to do this:
 
 ### Периферия / Peripherals
 
-- **ADC**: ADC1, ADC2 (множественные каналы для RGB)
+- **ADC**: ADC1, ADC2 (multiple channels for RGB / множественные каналы для RGB)
 - **Comparators**: COMP1, COMP2, COMP4
 - **DAC**: DAC1, DAC3
 - **Communication**:
@@ -64,7 +64,7 @@ There are several ways to do this:
   - I2C2
   - SPI1
   - USART1
-- **GPIO**: Множественные пины для управления RGB
+- **GPIO**: Multiple pins for RGB control / Множественные пины для управления RGB
 
 ### Основные пины RGB / Main RGB Pins
 
@@ -111,9 +111,9 @@ There are several ways to do this:
 
 ### Требования / Requirements
 
-1. STM32CubeIDE (рекомендуется версия 1.16.1 или новее)
-2. STM32CubeMX (версия 6.16.0 или новее)
-3. ST-Link программатор для загрузки прошивки
+1. STM32CubeIDE (version 1.16.1 or newer recommended / рекомендуется версия 1.16.1 или новее)
+2. STM32CubeMX (version 6.16.0 or newer / версия 6.16.0 или новее)
+3. ST-Link programmer for firmware flashing / ST-Link программатор для загрузки прошивки
 
 ### Инструкции по сборке / Build Instructions
 
