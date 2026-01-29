@@ -18,6 +18,10 @@
 #define RX_BUFFER_SIZE 32
 #define TX_BUFFER_SIZE 32
 
+extern uint8_t tx_buffer[TX_BUFFER_SIZE];
+extern uint8_t rx_buffer[RX_BUFFER_SIZE];
+extern uint8_t usb_ready;
+
 void systemInit();
 void usbCallback();
 void uartCallback();

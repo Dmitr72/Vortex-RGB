@@ -148,10 +148,10 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  HAL_GPIO_TogglePin(RED_GPIO_Port, RED_Pin);
+	  //HAL_GPIO_TogglePin(RED_GPIO_Port, RED_Pin);
 	  systemTask();
 	  //HAL_IWDG_Refresh(&hiwdg);
-	  HAL_Delay(100);
+	  HAL_Delay(10);
 
     /* USER CODE END WHILE */
 
@@ -263,7 +263,7 @@ static void MX_ADC1_Init(void)
   sConfig.Channel = ADC_CHANNEL_1;
   sConfig.Rank = ADC_REGULAR_RANK_1;
   sConfig.SamplingTime = ADC_SAMPLETIME_247CYCLES_5;
-  sConfig.SingleDiff = ADC_DIFFERENTIAL_ENDED;
+  sConfig.SingleDiff = ADC_SINGLE_ENDED;
   sConfig.OffsetNumber = ADC_OFFSET_NONE;
   sConfig.Offset = 0;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
@@ -275,7 +275,6 @@ static void MX_ADC1_Init(void)
   */
   sConfig.Channel = ADC_CHANNEL_6;
   sConfig.Rank = ADC_REGULAR_RANK_2;
-  sConfig.SingleDiff = ADC_SINGLE_ENDED;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     Error_Handler();
@@ -377,7 +376,7 @@ static void MX_ADC2_Init(void)
   sConfig.Channel = ADC_CHANNEL_4;
   sConfig.Rank = ADC_REGULAR_RANK_1;
   sConfig.SamplingTime = ADC_SAMPLETIME_247CYCLES_5;
-  sConfig.SingleDiff = ADC_DIFFERENTIAL_ENDED;
+  sConfig.SingleDiff = ADC_SINGLE_ENDED;
   sConfig.OffsetNumber = ADC_OFFSET_NONE;
   sConfig.Offset = 0;
   if (HAL_ADC_ConfigChannel(&hadc2, &sConfig) != HAL_OK)
@@ -389,7 +388,6 @@ static void MX_ADC2_Init(void)
   */
   sConfig.Channel = ADC_CHANNEL_11;
   sConfig.Rank = ADC_REGULAR_RANK_2;
-  sConfig.SingleDiff = ADC_SINGLE_ENDED;
   if (HAL_ADC_ConfigChannel(&hadc2, &sConfig) != HAL_OK)
   {
     Error_Handler();
@@ -408,7 +406,6 @@ static void MX_ADC2_Init(void)
   */
   sConfig.Channel = ADC_CHANNEL_14;
   sConfig.Rank = ADC_REGULAR_RANK_4;
-  sConfig.SingleDiff = ADC_DIFFERENTIAL_ENDED;
   if (HAL_ADC_ConfigChannel(&hadc2, &sConfig) != HAL_OK)
   {
     Error_Handler();
@@ -418,7 +415,6 @@ static void MX_ADC2_Init(void)
   */
   sConfig.Channel = ADC_CHANNEL_17;
   sConfig.Rank = ADC_REGULAR_RANK_5;
-  sConfig.SingleDiff = ADC_SINGLE_ENDED;
   if (HAL_ADC_ConfigChannel(&hadc2, &sConfig) != HAL_OK)
   {
     Error_Handler();
@@ -869,10 +865,10 @@ static void MX_GPIO_Init(void)
                           |R_PEN_Pin|RED_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, B_PEN_Pin|GREEN_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, OPA_B_EN_Pin|B_PEN_Pin|OPA_G_EN_Pin|GREEN_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, G_PEN_Pin|G_TH_CS_Pin|G_DIV_CS_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, G_PEN_Pin|G_TH_CS_Pin|G_DIV_CS_Pin|OPA_R_EN_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GYRO_CS_GPIO_Port, GYRO_CS_Pin, GPIO_PIN_RESET);
@@ -892,15 +888,15 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : B_PEN_Pin GREEN_Pin */
-  GPIO_InitStruct.Pin = B_PEN_Pin|GREEN_Pin;
+  /*Configure GPIO pins : OPA_B_EN_Pin B_PEN_Pin OPA_G_EN_Pin GREEN_Pin */
+  GPIO_InitStruct.Pin = OPA_B_EN_Pin|B_PEN_Pin|OPA_G_EN_Pin|GREEN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : G_PEN_Pin G_TH_CS_Pin G_DIV_CS_Pin */
-  GPIO_InitStruct.Pin = G_PEN_Pin|G_TH_CS_Pin|G_DIV_CS_Pin;
+  /*Configure GPIO pins : G_PEN_Pin G_TH_CS_Pin G_DIV_CS_Pin OPA_R_EN_Pin */
+  GPIO_InitStruct.Pin = G_PEN_Pin|G_TH_CS_Pin|G_DIV_CS_Pin|OPA_R_EN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;

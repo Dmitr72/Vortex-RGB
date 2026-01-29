@@ -26,18 +26,21 @@ bool RGB_Init(RGB_channel* rgb,
 {
 	uint8_t buf[EE_PAGE_SIZE] = {0};
 	if(eepromReadPage(ee, buf, eeprom_page_num) != HAL_OK) return 0;
-	uint32_t check_digit = buf[EE_PAGE_SIZE-1] << 8 | buf[EE_PAGE_SIZE-2];
-	if(check_digit != RGB_EE_CHECK_DIGIT){
-		rgb->threshold = 0;
-		rgb->divider = 0;
-		rgb->smolder = 0;
-		rgb->ee_checked = 0;
-	}else{
-		rgb->threshold = buf[0];
-		rgb->divider = buf[2] <<8 | buf[1];
-		rgb->smolder = buf[4] <<8 | buf[3];
-		rgb->ee_checked = 1;
-	}
+//	uint32_t check_digit = buf[EE_PAGE_SIZE-1] << 8 | buf[EE_PAGE_SIZE-2];
+//	if(check_digit != RGB_EE_CHECK_DIGIT){
+//		rgb->threshold = 0;
+//		rgb->divider = 0;
+//		rgb->smolder = 0;
+//		rgb->ee_checked = 0;
+//	}else{
+//		rgb->threshold = buf[0];
+//		rgb->divider = buf[2] <<8 | buf[1];
+//		rgb->smolder = buf[4] <<8 | buf[3];
+//		rgb->ee_checked = 1;
+//	}
+	rgb->threshold = buf[0];
+	rgb->divider = buf[2] <<8 | buf[1];
+	rgb->smolder = buf[4] <<8 | buf[3];
 
 	rgb->max_current = max_current;
 	rgb->threshold_had = threshold_had;
@@ -87,11 +90,31 @@ bool setRGBdivider(RGB_channel* rgb, uint16_t val){
 bool setRGBsmolder(RGB_channel* rgb, uint16_t val){
 	//printbyte(HAL_COMP_GetState(rgb->smolder_comp));
 	rgb->last_smolder = val;
-	if(val == 0) HAL_COMP_Stop(rgb->smolder_comp);
-	else{
-		if(HAL_COMP_GetState(rgb->smolder_comp) == HAL_COMP_STATE_READY) HAL_COMP_Start(rgb->smolder_comp);
-		if(HAL_DAC_SetValue(rgb->smolder_dac, rgb->smolder_dac_channel, DAC_ALIGN_12B_R, val)!=HAL_OK) return 0;
-	}
+//	if(val == 0){
+//		if(rgb->smolder_comp->Init.OutputPol == COMP_OUTPUTPOL_NONINVERTED){
+//			HAL_COMP_Stop(rgb->smolder_comp);
+//			rgb->smolder_comp->Init.OutputPol = COMP_OUTPUTPOL_INVERTED;
+//			if (HAL_COMP_Init(&hcomp1) == HAL_OK) {
+//				HAL_DAC_SetValue(rgb->smolder_dac, rgb->smolder_dac_channel, DAC_ALIGN_12B_R, 4095);
+//				HAL_COMP_Start(rgb->smolder_comp);
+//			}
+//		}
+//	}
+//
+//	else{
+//		//if(HAL_COMP_GetState(rgb->smolder_comp) == HAL_COMP_STATE_READY) HAL_COMP_Start(rgb->smolder_comp);
+//
+//		if(rgb->smolder_comp->Init.OutputPol == COMP_OUTPUTPOL_INVERTED){
+//			HAL_COMP_Stop(rgb->smolder_comp);
+//			rgb->smolder_comp->Init.OutputPol = COMP_OUTPUTPOL_NONINVERTED;
+//			if (HAL_COMP_Init(&hcomp1) == HAL_OK) {
+//
+//				HAL_COMP_Start(rgb->smolder_comp);
+//			}
+//		}
+//		if(HAL_DAC_SetValue(rgb->smolder_dac, rgb->smolder_dac_channel, DAC_ALIGN_12B_R, val)!=HAL_OK) return 0;
+//
+//	}
 
 	return 1;
 }
@@ -116,13 +139,13 @@ uint16_t getRGBsmolder(RGB_channel* rgb){
 
 // Return value in milliampers
 uint16_t getRGBcurrent(RGB_channel* rgb){
-//	rgb->actual_current = (uint32_t)(*rgb->adc_buffer * 65.20 / rgb->shunt);
+	rgb->actual_current = (uint32_t)(*rgb->adc_buffer_shunt * 25 / rgb->shunt);
 	return rgb->actual_current;
 }
 
-uint16_t getRGBsetCurrent(RGB_channel* rgb){
+//uint16_t getRGBsetCurrent(RGB_channel* rgb){
 //	return rgb->set_current;
-}
+//}
 
 void setRGBpwmMode(RGB_channel* rgb, uint8_t mode){
 

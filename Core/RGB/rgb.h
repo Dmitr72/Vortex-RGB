@@ -65,10 +65,10 @@ bool setRGBsmolder(RGB_channel* rgb, uint16_t val);
 uint8_t getRGBthreshold(RGB_channel* rgb);
 uint16_t getRGBdivider(RGB_channel* rgb);
 uint16_t getRGBsmolder(RGB_channel* rgb);
-void setRGBpwmPeriod(RGB_channel* rgb, uint8_t val);
+//void setRGBpwmPeriod(RGB_channel* rgb, uint8_t val);
 uint16_t getRGBcurrent(RGB_channel* rgb);
-uint16_t getRGBsetCurrent(RGB_channel* rgb);
-void setRGBpwmMode(RGB_channel* rgb, uint8_t mode);
+//uint16_t getRGBsetCurrent(RGB_channel* rgb);
+//void setRGBpwmMode(RGB_channel* rgb, uint8_t mode);
 HAL_StatusTypeDef SaveRGBconfigToEEPROM(EEprom_HandleTypeDef *eeprom, RGB_channel *channel, uint16_t page);
 
 #endif /* RGB_RGB_H_ */
